@@ -287,7 +287,7 @@ export default function DashboardFeature() {
                     </label>
                     <select
                       name="betOutcome"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
                     >
                       <option value="0">{event.teamA}</option>
                       <option value="1">{event.teamB}</option>
@@ -338,7 +338,7 @@ export default function DashboardFeature() {
                     id="resolveEventId"
                     value={resolveEventId}
                     onChange={(e) => setResolveEventId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
                   >
                     <option value="">-- Select an event --</option>
                     {renderDatabaseEventOptions()}
@@ -355,7 +355,7 @@ export default function DashboardFeature() {
                     id="resolveOutcome"
                     value={resolveOutcome}
                     onChange={(e) => setResolveOutcome(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
                   >
                     <option value="">Cancel Event</option>
                     <option value="0">Team A (0)</option>
@@ -390,7 +390,7 @@ export default function DashboardFeature() {
                     id="claimRewardEventId"
                     value={claimRewardEventId}
                     onChange={(e) => setClaimRewardEventId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
                   >
                     <option value="">-- Select an event --</option>
                     {renderDatabaseEventOptions()}
@@ -423,7 +423,7 @@ export default function DashboardFeature() {
                     id="deleteEventId"
                     value={deleteEventId}
                     onChange={(e) => setDeleteEventId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
                   >
                     <option value="">-- Select an event --</option>
                     {renderDatabaseEventOptions()}
