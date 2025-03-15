@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
 
-export async function GET() {
+async function GET() {
   try {
     const events = await db.fplEvent.findMany({
       orderBy: { kickoff: "asc" },
@@ -12,7 +12,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+async function POST(request: Request) {
   try {
     const { id, kickoff, teamA, teamB, tx, publicKey } = await request.json();
     const newEvent = await db.fplEvent.create({
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(request: Request) {
+async function PUT(request: Request) {
   try {
     const { id, resolvedOutcome } = await request.json();
     const updatedEvent = await db.fplEvent.update({
@@ -37,7 +37,7 @@ export async function PUT(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
+async function DELETE(request: Request) {
   try {
     const { id } = await request.json();
     const deletedEvent = await db.fplEvent.update({
