@@ -26,7 +26,7 @@ export const useClaimReward = () => {
       const eventIdBN = new BN(eventItem.id);
       const eventPubkey = new PublicKey(eventItem.publicKey);
 
-      const HOUSE_PUBLIC_KEY = new PublicKey("5EvTWpYhC3PFkiyuMzcTebKgT13S9BJwTtkXGiuiVrPf");
+      const HOUSE_PUBLIC_KEY = new PublicKey(process.env.NEXT_PUBLIC_OWNER_PUBLIC_KEY!);
       const [vaultPda] = await PublicKey.findProgramAddress(
         [Buffer.from("vault"), HOUSE_PUBLIC_KEY.toBuffer()],
         program.programId
