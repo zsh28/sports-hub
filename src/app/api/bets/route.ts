@@ -1,7 +1,12 @@
+// /src/app/api/bets/route.ts
 import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
 
-async function POST(request: Request) {
+export async function GET(request: Request) {
+  return NextResponse.json({ message: "GET method is not implemented for bets" }, { status: 405 });
+}
+
+export async function POST(request: Request) {
   try {
     const { eventId, wallet, outcome, amount, tx } = await request.json();
     const newBet = await db.bet.create({

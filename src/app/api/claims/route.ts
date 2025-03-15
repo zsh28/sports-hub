@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
 
-async function POST(request: Request) {
+export async function POST(request: Request) {
   try {
     const { eventId, wallet, tx } = await request.json();
     const newClaim = await db.claim.create({

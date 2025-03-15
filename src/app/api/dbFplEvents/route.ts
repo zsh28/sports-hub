@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
 
-async function GET() {
+export async function GET() {
   try {
     const events = await db.fplEvent.findMany({
       orderBy: { kickoff: "asc" },
@@ -12,7 +12,7 @@ async function GET() {
   }
 }
 
-async function POST(request: Request) {
+export async function POST(request: Request) {
   try {
     const { id, kickoff, teamA, teamB, tx, publicKey } = await request.json();
     const newEvent = await db.fplEvent.create({
