@@ -5,9 +5,25 @@ export const runtime = "nodejs";
 
 
 export async function GET() {
+  const events = await db.fplEvent.findMany({
+    where: {
+      NOT: {
+        resolvedOutcome: { not: null },
+        deletedAt: { not: null }
+      }
+    }
+  });
+  
   try {
     const events = await db.fplEvent.findMany({
       orderBy: { kickoff: "asc" },
+      //deletedat is null and resolvedoutcome is not null
+      where: {
+        NOT: {
+          resolvedOutcome: { not: null },
+          deletedAt: { not: null }
+        }
+      }
     });
     return NextResponse.json(events);
   } catch (error) {
