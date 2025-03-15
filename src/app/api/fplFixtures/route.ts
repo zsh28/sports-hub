@@ -1,6 +1,8 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 async function fetchFplFixtures() {
   try {
     const response = await axios.get("https://fantasy.premierleague.com/api/fixtures/");

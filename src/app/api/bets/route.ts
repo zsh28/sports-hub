@@ -2,6 +2,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
 
+export const runtime = "edge";
+
 export async function GET(request: Request) {
   return NextResponse.json({ message: "GET method is not implemented for bets" }, { status: 405 });
 }
