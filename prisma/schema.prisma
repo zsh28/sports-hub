@@ -1,0 +1,44 @@
+datasource db {
+  provider = "postgresql" // or your chosen provider
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model FplEvent {
+  id          Int      @id
+  kickoff     Int
+  teamA       String
+  teamB       String
+  tx          String?    // Onchain transaction signature for event creation
+  publicKey   String?    // On-chain event account public key
+  resolvedOutcome Int?   // Outcome (0,1,2) after resolution (null if not resolved)
+  deletedAt   DateTime?  // Timestamp for when the event is deleted (if any)
+  createdAt   DateTime   @default(now())
+  bets        Bet[]
+  claims      Claim[]
+}
+
+model Bet {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  wallet    String   // Wallet address of the user
+  outcome   Int      // Outcome selected by the bettor
+  amount    Float    // Bet amount (in SOL)
+  tx        String?  // Onchain transaction signature for bet placement
+  createdAt DateTime @default(now())
+
+  event FplEvent @relation(fields: [eventId], references: [id])
+}
+
+model Claim {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  wallet    String   // Wallet address of the user claiming reward
+  tx        String?  // Onchain transaction signature for the claim
+  claimedAt DateTime @default(now())
+
+  event FplEvent @relation(fields: [eventId], references: [id])
+}
