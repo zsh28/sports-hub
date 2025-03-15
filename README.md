@@ -1,172 +1,134 @@
-# Sportshub
+# 🏆 Sportshub
 
-A decentralized sports betting platform built on Solana that seamlessly integrates live football fixtures from the Fantasy Premier League API with on‑chain transactions. Sportshub uses Prisma for persistent database storage of events, bets, and claims while protecting owner-only functionalities for event management.
-
----
-
-## Features
-
-- **On‑Chain Sports Betting:**  
-  Create, resolve, delete, and claim rewards for sports events on the Solana blockchain.
-  
-- **External Fixture Integration:**  
-  Fetch live fixtures from the Fantasy Premier League API and display upcoming matches.
-  
-- **Database Persistence:**  
-  Persist on‑chain events, bets, and claims using Prisma and a PostgreSQL database.
-  
-- **Protected Owner Functionalities:**  
-  Certain features (such as creating events on-chain, resolving, deleting, and claiming rewards) are restricted to the owner (controlled via an environment variable).
+A **decentralized sports betting platform** built on Solana that seamlessly integrates live football fixtures from the **Fantasy Premier League API** with **on-chain transactions**. Sportshub utilizes **Prisma** for persistent database storage of events, bets, and claims while ensuring owner-only functionalities for event management.
 
 ---
 
-Below is an example Tech Stack section for your README. You can paste and adjust it as needed:
+## 📜 Smart Contract Information
+
+You can find the **Smart Contract code and address** below:
+
+🔗 **Repository:** [Sports Hub Smart Contract](https://github.com/zsh28/solana-builders-q3-2024/tree/master/capstone/sports-hub)  
+📝 **Smart Contract Address:** `DxbcyaGtfDoVJwYEu6XTRScs66EJwZ9QgaBrviycGSfV`
 
 ---
 
-## Tech Stack
+## ✨ Features
 
-**Frontend:**
-- **Next.js v14.2.5:** A React framework for server-side rendering and static site generation.
-- **React v18:** The latest version of the React library for building interactive UIs.
-- **Tailwind CSS v3.4.1 & DaisyUI:** Utility-first CSS framework with DaisyUI components for rapid UI development.
-- **TanStack React Query v5:** Powerful data-fetching, caching, and synchronization tool.
-- **React Hot Toast:** For in-app notifications and alerts.
-- **@tabler/icons-react:** A set of high-quality SVG icons for your UI.
+✅ **On‑Chain Sports Betting:**  
+Create, resolve, delete, and claim rewards for sports events on the **Solana blockchain**.
 
-**Blockchain:**
-- **@solana/web3.js:** JavaScript API to interact with the Solana blockchain.
-- **@solana/wallet-adapter-react & @solana/wallet-adapter-react-ui:** For connecting and interacting with Solana wallets.
-- **@solana/spl-token:** Library for managing SPL tokens.
-- **@coral-xyz/anchor:** A framework for developing on Solana with Anchor’s simplified APIs.
+✅ **External Fixture Integration:**  
+Fetch live fixtures from the **Fantasy Premier League API** and display upcoming matches.
 
-**Database & API:**
-- **Prisma v6.5.0:** Modern ORM for interacting with your PostgreSQL database.
-- **Axios:** Promise-based HTTP client for fetching external API data.
-- **PostgreSQL:** Your database, configured via the environment variable `DATABASE_URL`.
+✅ **Database Persistence:**  
+Store on‑chain events, bets, and claims using **Prisma** and a **PostgreSQL database**.
 
-**Utilities & Other:**
-- **Jotai:** A minimalistic state management library.
-- **Zod:** TypeScript-first schema declaration and validation library.
-- **ESLint & Jest:** For code linting and testing.
-- **Environment Variables Management:** Handled via `@t3-oss/env-nextjs` for secure and seamless environment variable integration.
+✅ **Protected Owner Functionalities:**  
+Certain features (*creating events on-chain, resolving, deleting, and claiming rewards*) are **restricted** to the owner (controlled via an **environment variable**).
 
 ---
 
-## Prerequisites
+## 🛠 Tech Stack
 
-- **Node.js:** v18.18.0 or higher
-- **Solana CLI:** Installed and configured for your network (e.g., devnet)
-- **Database:** PostgreSQL (or your chosen provider supported by Prisma)
+### **Frontend:**
+- ⚡ **Next.js** – Server-side rendering & static site generation.
+- ⚛️ **React** – Interactive UI development.
+- 🎨 **Tailwind CSS & DaisyUI** – Utility-first styling & prebuilt components.
+- 🔄 **TanStack React Query** – Optimized data fetching & caching.
+- 🔔 **React Hot Toast** – Real-time notifications.
+- 🎨 **@tabler/icons-react** – High-quality SVG icons.
+
+### **Blockchain:**
+- 🔗 **@solana/web3.js** – Solana blockchain interaction.
+- 👛 **@solana/wallet-adapter-react** – Solana wallet integration.
+- 🎰 **@solana/spl-token** – SPL token management.
+- 🔧 **@coral-xyz/anchor** – Simplified smart contract development on Solana.
+
+### **Database & API:**
+- 🏦 **Prisma** – Type-safe ORM for database interactions.
+- 🌐 **Axios** – HTTP client for API requests.
+- 🗄 **PostgreSQL** – Database storage.
+
+### **Utilities & Other:**
+- ⚡ **Jotai** – State management.
+- 🔍 **Zod** – TypeScript-first schema validation.
+- ✅ **ESLint & Jest** – Code linting & testing.
+- 🔐 **Environment Management** – Handled via `@t3-oss/env-nextjs`.
 
 ---
 
-## Installation
+## 🚀 Getting Started
 
-### 1. Clone the Repository
+### **Prerequisites**
+- 📦 **Node.js**: v18.18.0 or higher
+- 💰 **Solana CLI**: Installed & configured
+- 🏦 **Database**: PostgreSQL (or Prisma-supported provider)
 
-```bash
-git clone https://github.com/solana-developers/sportshub.git
-cd sportshub
+### **Installation Steps**
+
+#### 1️⃣ Clone the Repository
+```sh
+ git clone https://github.com/solana-developers/sportshub.git
+ cd sportshub
 ```
 
-### 2. Install Dependencies
-
-Use your preferred package manager (we recommend pnpm):
-
-```bash
-pnpm install
+#### 2️⃣ Install Dependencies
+```sh
+ pnpm install
 ```
 
-### 3. Set Up Environment Variables
-
-Create a `.env` file in the root directory and define the following variables:
-
+#### 3️⃣ Set Up Environment Variables
+Create a `.env` file in the root directory with the following variables:
 ```env
-NODE_ENV=development
-DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
-NEXT_PUBLIC_OWNER_PUBLIC_KEY=YourOwnerWalletPublicKeyHere
+ NODE_ENV=development
+ DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+ NEXT_PUBLIC_OWNER_PUBLIC_KEY=YourOwnerWalletPublicKeyHere
+```
+Replace placeholders with actual values.
+
+#### 4️⃣ Run Prisma Migrations
+```sh
+ npx prisma migrate dev --name init
 ```
 
-Make sure to replace the placeholders with your actual values.
+#### 5️⃣ Start Development Server
+```sh
+ pnpm dev
+```
+Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
-### 4. Run Prisma Migrations
-
-Generate and run the Prisma migrations to set up your database schema:
-
-```bash
-npx prisma migrate dev --name init
+#### 🏗 Build for Production
+```sh
+ pnpm build
 ```
 
----
-
-## Running the Application
-
-### Start the Development Server
-
-```bash
-pnpm dev
-```
-
-Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to see Sportshub in action.
-
-### Build for Production
-
-To build the application for production, run:
-
-```bash
-pnpm build
-```
-
-And to start the production server:
-
-```bash
-pnpm start
+#### 🚀 Start Production Server
+```sh
+ pnpm start
 ```
 
 ---
 
-## Application Structure
+## 🏗 Application Structure
 
-### API Endpoints
+### **📡 API Endpoints**
+- **External Fixtures:** `/api/fplFixtures` → Fetch live fixtures.
+- **Database Events:** `/api/dbFplEvents` → Manage on‑chain events.
+- **Bets:** `/api/bets` → Log bet placements.
+- **Claims:** `/api/claims` → Log reward claims.
 
-- **External Fixtures:**  
-  - Endpoint: `/api/fplFixtures`  
-  - Fetches live fixtures from the Fantasy Premier League API.
+### **📌 Custom Hooks**
+- `useFplFixtures` → Fetches external fixture data.
+- `useDatabaseEvents` → Retrieves on‑chain event data.
+- `useCreateEvent`, `usePlaceBet`, `useResolveEvent`, `useClaimReward`, `useDeleteEvent` → Wrap on‑chain transactions & persist data via API.
 
-- **Database Events:**  
-  - Endpoint: `/api/dbFplEvents`  
-  - Handles CRUD operations for on‑chain events stored in the database.
+### **🖥 Frontend Dashboard**
+The dashboard consists of:
+1️⃣ **FPL Fixtures (External)** – Displays upcoming matches with admin-only on-chain event creation.
+2️⃣ **Database Events** – Displays on-chain events with options to place bets, resolve, delete, and claim rewards.
 
-- **Bets:**  
-  - Endpoint: `/api/bets`  
-  - Logs bet placements.
-
-- **Claims:**  
-  - Endpoint: `/api/claims`  
-  - Logs reward claims.
-
-### Custom Hooks
-
-- **useFplFixtures:**  
-  Fetches external fixture data.
-
-- **useDatabaseEvents:**  
-  Retrieves on‑chain events stored in your database.
-
-- **useCreateEvent, usePlaceBet, useResolveEvent, useClaimReward, useDeleteEvent:**  
-  Wrap the on‑chain transactions and persist data via the corresponding API endpoints.
-
-### Frontend (Dashboard)
-
-- The dashboard component renders two main sections:
-  1. **FPL Fixtures (External):**  
-     Displays upcoming matches with an inline option (available only to the owner) to create events on‑chain.
-  
-  2. **Database Events:**  
-     Displays events stored in the database along with an inline form to place bets directly on each game. Owner-only functionalities (resolve, claim, delete) are also provided here.
-
-- **Owner Protection:**  
-  The application checks if the connected wallet’s public key matches `NEXT_PUBLIC_OWNER_PUBLIC_KEY`. If so, it renders owner‑only controls; otherwise, these functionalities remain hidden.
+**🔐 Owner-Only Protection:**
+The app checks the wallet's public key against `NEXT_PUBLIC_OWNER_PUBLIC_KEY` to grant access to restricted functionalities.
 
 ---
