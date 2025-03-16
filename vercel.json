@@ -1,11 +1,8 @@
 {
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "env": {
+  "buildCommand": "prisma generate && next build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "environmentVariables": {
     "PRISMA_SKIP_POSTINSTALL": "true"
   }
 } 
