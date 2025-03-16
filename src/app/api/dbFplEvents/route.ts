@@ -1,3 +1,5 @@
+//src/app/api/dbFplEvents/route.ts
+
 import { NextResponse } from "next/server";
 import { db } from "@/lib/prisma";
 
@@ -40,7 +42,7 @@ export async function POST(request: Request) {
   }
 }
 
-async function PUT(request: Request) {
+export async function PUT(request: Request) {
   try {
     const { id, resolvedOutcome } = await request.json();
     const updatedEvent = await db.fplEvent.update({
@@ -53,7 +55,7 @@ async function PUT(request: Request) {
   }
 }
 
-async function DELETE(request: Request) {
+export async function DELETE(request: Request) {
   try {
     const { id } = await request.json();
     const deletedEvent = await db.fplEvent.update({
