@@ -269,13 +269,31 @@ export default function DashboardFeature() {
                 key={event.id}
                 className="border rounded-lg shadow-lg p-6 bg-blue-950 text-white"
               >
-                <h4 className="text-lg font-bold">
-                  {event.teamA} vs {event.teamB}
-                </h4>
-                <p>
+                {/* Team Logos and Matchup */}
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={event.teamALogo}
+                      alt={event.teamA}
+                      className="w-16 h-16"
+                    />
+                  </div>
+                  <span className="text-xl font-bold">VS</span>
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={event.teamBLogo}
+                      alt={event.teamB}
+                      className="w-16 h-16"
+                    />
+                  </div>
+                </div>
+
+                {/* Match Info */}
+                <p className="mt-4">
                   Kickoff: {new Date(event.kickoff * 1000).toLocaleString()}
                 </p>
                 <p>ID: {event.id}</p>
+
                 {/* Inline Bet Form */}
                 <form
                   onSubmit={(e) => handlePlaceBet(e, event.id.toString())}
