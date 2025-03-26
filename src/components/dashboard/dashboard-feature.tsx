@@ -12,11 +12,24 @@ import { useClaimReward } from "@/hooks/useClaimReward";
 import { useDeleteEvent } from "@/hooks/useDeleteEvent";
 
 export default function DashboardFeature() {
+  // Place Bet state (any user can place a bet)
+  const [betEventId, setBetEventId] = useState<string>("");
+  const [betTeam, setBetTeam] = useState<string>("");
+  const [betAmount, setBetAmount] = useState<string>("");
+
+  // Owner-only states
+  const [resolveEventId, setResolveEventId] = useState<string>("");
+  const [resolveOutcome, setResolveOutcome] = useState<string>("");
+  const [claimRewardEventId, setClaimRewardEventId] = useState<string>("");
+  const [deleteEventId, setDeleteEventId] = useState<string>("");
+
+  // Add this state for days filter
+  const [fixturesDays, setFixturesDays] = useState<number>(7);
   const {
     data: fixtures,
     isLoading: fixturesLoading,
     error: fixturesError,
-  } = useFplFixtures();
+  } = useFplFixtures(fixturesDays);
   const {
     data: dbEvents,
     isLoading: dbLoading,
@@ -34,19 +47,6 @@ export default function DashboardFeature() {
   const resolveEventMutation = useResolveEvent();
   const claimRewardMutation = useClaimReward();
   const deleteEventMutation = useDeleteEvent();
-
-  const [loadingEventId, setLoadingEventId] = useState<number | null>(null);
-
-  // Place Bet state (any user can place a bet)
-  const [betEventId, setBetEventId] = useState<string>("");
-  const [betTeam, setBetTeam] = useState<string>("");
-  const [betAmount, setBetAmount] = useState<string>("");
-
-  // Owner-only states
-  const [resolveEventId, setResolveEventId] = useState<string>("");
-  const [resolveOutcome, setResolveOutcome] = useState<string>("");
-  const [claimRewardEventId, setClaimRewardEventId] = useState<string>("");
-  const [deleteEventId, setDeleteEventId] = useState<string>("");
 
   // Handler for creating an event on-chain from an external fixture (owner-only)
   const onCreateEvent = useCallback(
@@ -244,6 +244,32 @@ export default function DashboardFeature() {
         {isOwner && (
           <>
             <h3 className="text-2xl font-bold mb-6">FPL Fixtures (External)</h3>
+
+            {/* Add days filter control */}
+            <div className="mb-4 flex justify-end">
+              <div className="inline-block">
+                <label htmlFor="fixturesDays" className="mr-2">
+                  Show fixtures for next:
+                </label>
+                <input
+                  id="fixturesDays"
+                  type="number"
+                  min="1"
+                  max="180"
+                  value={fixturesDays}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10);
+                    // Ensure we have a valid number
+                    if (!isNaN(value) && value > 0) {
+                      setFixturesDays(value);
+                    }
+                  }}
+                  className="px-2 py-1 rounded bg-gray-800 text-white w-16 mr-1"
+                />
+                <span className="text-white">days</span>
+              </div>
+            </div>
+
             {fixturesError && (
               <p className="text-red-500">Error loading fixtures.</p>
             )}

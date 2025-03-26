@@ -29,14 +29,18 @@ async function fetchTeamData() {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const daysParam = url.searchParams.get('days');
+  const days = daysParam ? parseInt(daysParam, 10) : 7; // Default to 7 days if not specified
+  
   const [fixtures, teamMap] = await Promise.all([fetchFplFixtures(), fetchTeamData()]);
 
-  // Calculate epoch range for the next 7 days (starting at UTC midnight today)
+  // Calculate epoch range for the specified number of days (starting at UTC midnight today)
   const now = new Date();
   const startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
   const startEpoch = startDate.getTime() / 1000;
-  const endEpoch = startEpoch + 7 * 24 * 3600;
+  const endEpoch = startEpoch + days * 24 * 3600;
 
   const events = fixtures
     .map((fixture: any) => {

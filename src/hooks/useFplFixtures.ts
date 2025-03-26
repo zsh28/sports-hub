@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 export type FplFixture = {
   id: number;
@@ -7,15 +7,16 @@ export type FplFixture = {
   teamB: string;
 };
 
-export const useFplFixtures = () => {
-  return useQuery<FplFixture[], Error>({
-    queryKey: ['fplFixtures'],
+// This would be in your hooks file
+export function useFplFixtures(days: number) {
+  return useQuery({
+    queryKey: ["fplFixtures", days],
     queryFn: async () => {
-      const res = await fetch('/api/fplFixtures');
-      if (!res.ok) {
-        throw new Error('Failed to fetch fixtures');
+      const response = await fetch(`/api/fplFixtures?days=${days}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch fixtures");
       }
-      return res.json();
+      return response.json();
     },
   });
-};
+}
