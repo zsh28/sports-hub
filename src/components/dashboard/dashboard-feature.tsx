@@ -10,6 +10,7 @@ import { usePlaceBet } from "@/hooks/usePlaceBet";
 import { useResolveEvent } from "@/hooks/useResolveEvent";
 import { useClaimReward } from "@/hooks/useClaimReward";
 import { useDeleteEvent } from "@/hooks/useDeleteEvent";
+import Link from "next/link";
 
 export default function DashboardFeature() {
   // Place Bet state (any user can place a bet)
@@ -230,9 +231,72 @@ export default function DashboardFeature() {
 
   const renderDatabaseEventOptions = () => {
     return (dbEvents || []).map((event: DatabaseEvent) => (
-      <option key={event.id} value={event.id}>
-        {`ID ${event.id}: ${event.teamA} vs ${event.teamB}`}
-      </option>
+      <Link href={`/events/${event.id}`} key={event.id}>
+        <div className="border rounded-lg shadow-lg p-6 bg-blue-950 text-white cursor-pointer hover:bg-blue-900 transition-colors">
+          {/* Team Logos and Matchup */}
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col items-center">
+              <img
+                src={event.teamALogo}
+                alt={event.teamA}
+                className="w-16 h-16"
+              />
+            </div>
+            <span className="text-xl font-bold">VS</span>
+            <div className="flex flex-col items-center">
+              <img
+                src={event.teamBLogo}
+                alt={event.teamB}
+                className="w-16 h-16"
+              />
+            </div>
+          </div>
+
+          {/* Match Info */}
+          <p className="mt-4">
+            Kickoff: {new Date(event.kickoff * 1000).toLocaleString()}
+          </p>
+          <p>ID: {event.id}</p>
+
+          {/* Inline Bet Form */}
+          <form
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={(e) => handlePlaceBet(e, event.id.toString())}
+            className="mt-4 space-y-3"
+          >
+            <div>
+              <label className="block text-sm font-medium">
+                Select Team
+              </label>
+              <select
+                name="betOutcome"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
+              >
+                <option value="0">{event.teamA}</option>
+                <option value="1">{event.teamB}</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">
+                Bet Amount (SOL)
+              </label>
+              <input
+                type="number"
+                step="0.0001"
+                name="betAmount"
+                placeholder="Enter bet amount"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 rounded-lg font-semibold bg-green-500 hover:bg-green-600"
+            >
+              Place Bet
+            </button>
+          </form>
+        </div>
+      </Link>
     ));
   };
 
@@ -290,74 +354,7 @@ export default function DashboardFeature() {
         {dbEvents && dbEvents.length === 0 && <p>No events found.</p>}
         {dbEvents && dbEvents.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {dbEvents.map((event: DatabaseEvent) => (
-              <div
-                key={event.id}
-                className="border rounded-lg shadow-lg p-6 bg-blue-950 text-white"
-              >
-                {/* Team Logos and Matchup */}
-                <div className="flex justify-between items-center">
-                  <div className="flex flex-col items-center">
-                    <img
-                      src={event.teamALogo}
-                      alt={event.teamA}
-                      className="w-16 h-16"
-                    />
-                  </div>
-                  <span className="text-xl font-bold">VS</span>
-                  <div className="flex flex-col items-center">
-                    <img
-                      src={event.teamBLogo}
-                      alt={event.teamB}
-                      className="w-16 h-16"
-                    />
-                  </div>
-                </div>
-
-                {/* Match Info */}
-                <p className="mt-4">
-                  Kickoff: {new Date(event.kickoff * 1000).toLocaleString()}
-                </p>
-                <p>ID: {event.id}</p>
-
-                {/* Inline Bet Form */}
-                <form
-                  onSubmit={(e) => handlePlaceBet(e, event.id.toString())}
-                  className="mt-4 space-y-3"
-                >
-                  <div>
-                    <label className="block text-sm font-medium">
-                      Select Team
-                    </label>
-                    <select
-                      name="betOutcome"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
-                    >
-                      <option value="0">{event.teamA}</option>
-                      <option value="1">{event.teamB}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium">
-                      Bet Amount (SOL)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.0001"
-                      name="betAmount"
-                      placeholder="Enter bet amount"
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full px-4 py-2 rounded-lg font-semibold bg-green-500 hover:bg-green-600"
-                  >
-                    Place Bet
-                  </button>
-                </form>
-              </div>
-            ))}
+            {renderDatabaseEventOptions()}
           </div>
         )}
 
