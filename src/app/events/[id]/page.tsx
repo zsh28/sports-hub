@@ -11,7 +11,7 @@ export default function EventPage() {
   const { id } = useParams();
   const eventId = Array.isArray(id) ? id[0] : id;
   const { data: dbEvents } = useDatabaseEvents();
-  const { data: bets } = useEventBets(eventId);
+  const { data: bets, refetch } = useEventBets(eventId);
   const placeBetMutation = usePlaceBet();
   const { showTransactionToast, showToast } = useTransactionToast();
 
@@ -45,12 +45,20 @@ export default function EventPage() {
       <div className="bg-blue-950 p-6 rounded-xl shadow-lg text-center">
         <div className="flex justify-center items-center gap-6 mb-4">
           <div className="flex flex-col items-center">
-            <img src={event.teamALogo} alt={event.teamA} className="w-16 h-16" />
+            <img
+              src={event.teamALogo}
+              alt={event.teamA}
+              className="w-16 h-16"
+            />
             <p className="text-sm mt-1">{event.teamA}</p>
           </div>
           <span className="text-2xl font-bold text-gray-300">VS</span>
           <div className="flex flex-col items-center">
-            <img src={event.teamBLogo} alt={event.teamB} className="w-16 h-16" />
+            <img
+              src={event.teamBLogo}
+              alt={event.teamB}
+              className="w-16 h-16"
+            />
             <p className="text-sm mt-1">{event.teamB}</p>
           </div>
         </div>
@@ -65,7 +73,9 @@ export default function EventPage() {
         <h2 className="text-xl font-semibold mb-4">Place Your Bet</h2>
         <form onSubmit={handleBetSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 text-sm font-medium">Select Team</label>
+            <label className="block mb-1 text-sm font-medium">
+              Select Team
+            </label>
             <select
               value={betTeam}
               onChange={(e) => setBetTeam(e.target.value)}
@@ -101,12 +111,25 @@ export default function EventPage() {
       </div>
 
       {/* Bets History */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Previous Bets</h2>
+      <div className="bg-gray-900 p-6 rounded-xl shadow-md space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">Previous Bets</h2>
+          <button
+            onClick={() => refetch()}
+            className="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-1.5 px-4 rounded-md"
+          >
+            Refresh Bets
+          </button>
+        </div>
+
         {bets && bets.length > 0 ? (
           <ul className="space-y-3">
             {bets.map((bet) => {
-                const userShort = bet.wallet.slice(0, 4) + "..." + bet.wallet.slice(-4);
+              const wallet = bet.wallet || "";
+              const userShort =
+                wallet.length >= 8
+                  ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}`
+                  : wallet;
 
               return (
                 <li
@@ -114,16 +137,15 @@ export default function EventPage() {
                   className="bg-gray-800 p-4 rounded-md shadow-sm text-sm"
                 >
                   <p>
-                    <span className="font-semibold">Wallet:</span>{" "}
-                    {userShort}
+                    <span className="font-semibold">Wallet:</span> {userShort}
                   </p>
                   <p>
                     <span className="font-semibold">Team:</span>{" "}
                     {bet.betTeam === 0 ? event.teamA : event.teamB}
                   </p>
                   <p>
-                    <span className="font-semibold">Amount:</span>{" "}
-                    {bet.amount} SOL
+                    <span className="font-semibold">Amount:</span> {bet.amount}{" "}
+                    SOL
                   </p>
                 </li>
               );
