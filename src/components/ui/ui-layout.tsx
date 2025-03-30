@@ -20,7 +20,7 @@ export function UiLayout({
       {/* Header */}
       <header className="bg-base-300 dark:text-neutral-content">
         <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between py-4 space-y-2 md:space-y-0">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center">
             <Link className="btn btn-ghost normal-case text-xl" href="/">
               <img
                 src="/sportshub.webp"
