@@ -13,33 +13,32 @@ import { useDeleteEvent } from "@/hooks/useDeleteEvent";
 import Link from "next/link";
 
 export default function DashboardFeature() {
-  // Place Bet state (any user can place a bet)
   const [betEventId, setBetEventId] = useState<string>("");
   const [betTeam, setBetTeam] = useState<string>("");
   const [betAmount, setBetAmount] = useState<string>("");
 
-  // Owner-only states
   const [resolveEventId, setResolveEventId] = useState<string>("");
   const [resolveOutcome, setResolveOutcome] = useState<string>("");
   const [claimRewardEventId, setClaimRewardEventId] = useState<string>("");
   const [deleteEventId, setDeleteEventId] = useState<string>("");
 
-  // Add this state for days filter
   const [fixturesDays, setFixturesDays] = useState<number>(7);
+
   const {
     data: fixtures,
     isLoading: fixturesLoading,
     error: fixturesError,
   } = useFplFixtures(fixturesDays);
+
   const {
     data: dbEvents,
     isLoading: dbLoading,
     error: dbError,
   } = useDatabaseEvents();
+
   const wallet = useWallet();
   const { showToast, showTransactionToast } = useTransactionToast();
 
-  // Owner public key from env variable
   const ownerPublicKey = process.env.NEXT_PUBLIC_OWNER_PUBLIC_KEY || "";
   const isOwner = wallet.publicKey?.toBase58() === ownerPublicKey;
 
@@ -49,7 +48,6 @@ export default function DashboardFeature() {
   const claimRewardMutation = useClaimReward();
   const deleteEventMutation = useDeleteEvent();
 
-  // Handler for creating an event on-chain from an external fixture (owner-only)
   const onCreateEvent = useCallback(
     async (fixture: FplFixture) => {
       if (!isOwner) {
@@ -103,7 +101,6 @@ export default function DashboardFeature() {
     const formData = new FormData(e.currentTarget);
     const outcome = formData.get("betOutcome") as string;
     const betAmount = formData.get("betAmount") as string;
-    // Call your existing bet mutation with these values:
     placeBetMutation
       .mutateAsync({
         betEventId: eventId,
@@ -111,12 +108,8 @@ export default function DashboardFeature() {
         betAmount,
         onChainEvents: dbEvents || [],
       })
-      .then((tx) => {
-        showTransactionToast(tx);
-      })
-      .catch((err: any) => {
-        showToast("error", `Bet failed: ${err.message}`);
-      });
+      .then((tx) => showTransactionToast(tx))
+      .catch((err: any) => showToast("error", `Bet failed: ${err.message}`));
   };
 
   const onResolveEvent = useCallback(
@@ -206,7 +199,15 @@ export default function DashboardFeature() {
     ]
   );
 
-  // Render external fixtures (for creating on-chain events)
+  // ✅ NEW helper for select options
+  const renderDatabaseEventSelectOptions = () => {
+    return (dbEvents || []).map((event: DatabaseEvent) => (
+      <option key={event.id} value={event.id}>
+        {event.teamA} vs {event.teamB} (ID: {event.id})
+      </option>
+    ));
+  };
+
   const renderFixtureOptions = () => {
     return (fixtures || []).map((fixture: FplFixture) => (
       <div
@@ -233,64 +234,49 @@ export default function DashboardFeature() {
     return (dbEvents || []).map((event: DatabaseEvent) => (
       <Link href={`/events/${event.id}`} key={event.id}>
         <div className="border rounded-lg shadow-lg p-6 bg-blue-950 text-white cursor-pointer hover:bg-blue-900 transition-colors">
-          {/* Team Logos and Matchup */}
           <div className="flex justify-between items-center">
-            <div className="flex flex-col items-center">
-              <img
-                src={event.teamALogo}
-                alt={event.teamA}
-                className="w-16 h-16"
-              />
-            </div>
+            <img
+              src={event.teamALogo}
+              alt={event.teamA}
+              className="w-16 h-16"
+            />
             <span className="text-xl font-bold">VS</span>
-            <div className="flex flex-col items-center">
-              <img
-                src={event.teamBLogo}
-                alt={event.teamB}
-                className="w-16 h-16"
-              />
-            </div>
+            <img
+              src={event.teamBLogo}
+              alt={event.teamB}
+              className="w-16 h-16"
+            />
           </div>
-
-          {/* Match Info */}
           <p className="mt-4">
             Kickoff: {new Date(event.kickoff * 1000).toLocaleString()}
           </p>
           <p>ID: {event.id}</p>
-
-          {/* Inline Bet Form */}
           <form
             onClick={(e) => e.stopPropagation()}
             onSubmit={(e) => handlePlaceBet(e, event.id.toString())}
             className="mt-4 space-y-3"
           >
-            <div>
-              <label className="block text-sm font-medium">
-                Select Team
-              </label>
-              <select
-                name="betOutcome"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
-              >
-                <option value="0">{event.teamA}</option>
-                <option value="1">{event.teamB}</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium">
-                Bet Amount (SOL)
-              </label>
-              <input
-                type="number"
-                step="0.0001"
-                name="betAmount"
-                placeholder="Enter bet amount"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
-              />
-            </div>
+            <label className="block text-sm font-medium">Select Team</label>
+            <select
+              name="betOutcome"
+              className="block w-full rounded p-2 bg-gray-800 text-white"
+            >
+              <option value="0">{event.teamA}</option>
+              <option value="1">{event.teamB}</option>
+            </select>
+            <label className="block text-sm font-medium">
+              Bet Amount (SOL)
+            </label>
+            <input
+              type="number"
+              step="0.0001"
+              name="betAmount"
+              className="block w-full rounded p-2"
+              placeholder="Enter bet amount"
+            />
             <button
               type="submit"
-              className="w-full px-4 py-2 rounded-lg font-semibold bg-green-500 hover:bg-green-600"
+              className="w-full px-4 py-2 rounded bg-green-500 hover:bg-green-600"
             >
               Place Bet
             </button>
@@ -303,43 +289,28 @@ export default function DashboardFeature() {
   return (
     <div>
       <AppHero title="Sports Hub" subtitle="Manage sports betting events" />
-      <div className="max-w-5xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center">
-        {/* Section 1: External Fixtures (Only Visible to Owner) */}
+      <div className="max-w-5xl mx-auto py-6 px-4 text-center">
         {isOwner && (
           <>
             <h3 className="text-2xl font-bold mb-6">FPL Fixtures (External)</h3>
-
-            {/* Add days filter control */}
             <div className="mb-4 flex justify-end">
-              <div className="inline-block">
-                <label htmlFor="fixturesDays" className="mr-2">
-                  Show fixtures for next:
-                </label>
-                <input
-                  id="fixturesDays"
-                  type="number"
-                  min="1"
-                  max="180"
-                  value={fixturesDays}
-                  onChange={(e) => {
-                    const value = parseInt(e.target.value, 10);
-                    // Ensure we have a valid number
-                    if (!isNaN(value) && value > 0) {
-                      setFixturesDays(value);
-                    }
-                  }}
-                  className="px-2 py-1 rounded bg-gray-800 text-white w-16 mr-1"
-                />
-                <span className="text-white">days</span>
-              </div>
+              <label className="mr-2">Show fixtures for next:</label>
+              <input
+                type="number"
+                value={fixturesDays}
+                min="1"
+                max="180"
+                onChange={(e) => setFixturesDays(Number(e.target.value))}
+                className="w-16 p-1 rounded bg-gray-800 text-white mr-2"
+              />
+              <span className="text-white">days</span>
             </div>
-
+            {fixturesLoading && <p>Loading fixtures...</p>}
             {fixturesError && (
               <p className="text-red-500">Error loading fixtures.</p>
             )}
-            {fixturesLoading && <p>Loading fixtures...</p>}
-            {fixtures && fixtures.length === 0 && <p>No fixtures found.</p>}
-            {fixtures && fixtures.length > 0 && (
+            {fixtures?.length === 0 && <p>No fixtures found.</p>}
+            {fixtures?.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {renderFixtureOptions()}
               </div>
@@ -347,132 +318,98 @@ export default function DashboardFeature() {
           </>
         )}
 
-        {/* Section 2: Database Events with Inline Bet Form */}
         <h3 className="text-2xl font-bold my-6">Events</h3>
+        {dbLoading && (
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-4 border-white border-t-transparent"></div>
+          </div>
+        )}
         {dbError && <p className="text-red-500">Error loading events.</p>}
-        {dbLoading && <p>Loading events...</p>}
-        {dbEvents && dbEvents.length === 0 && <p>No events found.</p>}
-        {dbEvents && dbEvents.length > 0 && (
+        {dbEvents?.length === 0 && <p>No events found.</p>}
+        {dbEvents?.length && dbEvents.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {renderDatabaseEventOptions()}
           </div>
         )}
 
-        {/* Owner-only functionalities */}
         {isOwner && (
           <>
-            {/* Resolve Event Form */}
+            {/* Resolve Event */}
             <div className="mt-12">
               <h3 className="text-2xl font-bold mb-6">Resolve Event</h3>
               <form
                 onSubmit={onResolveEvent}
                 className="max-w-md mx-auto text-left"
               >
-                <div className="mb-4">
-                  <label
-                    htmlFor="resolveEventId"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Select Event (from DB)
-                  </label>
-                  <select
-                    id="resolveEventId"
-                    value={resolveEventId}
-                    onChange={(e) => setResolveEventId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
-                  >
-                    <option value="">-- Select an event --</option>
-                    {renderDatabaseEventOptions()}
-                  </select>
-                </div>
-                <div className="mb-4">
-                  <label
-                    htmlFor="resolveOutcome"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Outcome (empty = cancel event)
-                  </label>
-                  <select
-                    id="resolveOutcome"
-                    value={resolveOutcome}
-                    onChange={(e) => setResolveOutcome(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
-                  >
-                    <option value="">Cancel Event</option>
-                    <option value="0">Team A (0)</option>
-                    <option value="1">Team B (1)</option>
-                    <option value="2">Draw (2)</option>
-                  </select>
-                </div>
+                <select
+                  value={resolveEventId}
+                  onChange={(e) => setResolveEventId(e.target.value)}
+                  className="w-full rounded p-2 bg-gray-800 text-white mb-4"
+                >
+                  <option value="">-- Select an event --</option>
+                  {renderDatabaseEventSelectOptions()}
+                </select>
+                <select
+                  value={resolveOutcome}
+                  onChange={(e) => setResolveOutcome(e.target.value)}
+                  className="w-full rounded p-2 bg-gray-800 text-white mb-4"
+                >
+                  <option value="">Cancel Event</option>
+                  <option value="0">Team A (0)</option>
+                  <option value="1">Team B (1)</option>
+                  <option value="2">Draw (2)</option>
+                </select>
                 <button
                   type="submit"
-                  className="mt-4 w-full px-4 py-2 rounded-lg font-semibold bg-purple-500 hover:bg-purple-600 text-white"
+                  className="w-full px-4 py-2 rounded bg-purple-500 hover:bg-purple-600 text-white"
                 >
                   Resolve Event
                 </button>
               </form>
             </div>
 
-            {/* Claim Reward Form */}
+            {/* Claim Reward */}
             <div className="mt-12">
               <h3 className="text-2xl font-bold mb-6">Claim Reward</h3>
               <form
                 onSubmit={onClaimReward}
                 className="max-w-md mx-auto text-left"
               >
-                <div className="mb-4">
-                  <label
-                    htmlFor="claimRewardEventId"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Select Event (from DB)
-                  </label>
-                  <select
-                    id="claimRewardEventId"
-                    value={claimRewardEventId}
-                    onChange={(e) => setClaimRewardEventId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
-                  >
-                    <option value="">-- Select an event --</option>
-                    {renderDatabaseEventOptions()}
-                  </select>
-                </div>
+                <select
+                  value={claimRewardEventId}
+                  onChange={(e) => setClaimRewardEventId(e.target.value)}
+                  className="w-full rounded p-2 bg-gray-800 text-white mb-4"
+                >
+                  <option value="">-- Select an event --</option>
+                  {renderDatabaseEventSelectOptions()}
+                </select>
                 <button
                   type="submit"
-                  className="mt-4 w-full px-4 py-2 rounded-lg font-semibold bg-orange-500 hover:bg-orange-600 text-white"
+                  className="w-full px-4 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white"
                 >
                   Claim Reward
                 </button>
               </form>
             </div>
 
-            {/* Delete Event Form */}
+            {/* Delete Event */}
             <div className="mt-12">
               <h3 className="text-2xl font-bold mb-6">Delete Event</h3>
               <form
                 onSubmit={onDeleteEvent}
                 className="max-w-md mx-auto text-left"
               >
-                <div className="mb-4">
-                  <label
-                    htmlFor="deleteEventId"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Select Event (from DB)
-                  </label>
-                  <select
-                    id="deleteEventId"
-                    value={deleteEventId}
-                    onChange={(e) => setDeleteEventId(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-gray-800 text-white"
-                  >
-                    <option value="">-- Select an event --</option>
-                    {renderDatabaseEventOptions()}
-                  </select>
-                </div>
+                <select
+                  value={deleteEventId}
+                  onChange={(e) => setDeleteEventId(e.target.value)}
+                  className="w-full rounded p-2 bg-gray-800 text-white mb-4"
+                >
+                  <option value="">-- Select an event --</option>
+                  {renderDatabaseEventSelectOptions()}
+                </select>
                 <button
                   type="submit"
-                  className="mt-4 w-full px-4 py-2 rounded-lg font-semibold bg-red-500 hover:bg-red-600 text-white"
+                  className="w-full px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
                 >
                   Delete Event
                 </button>
